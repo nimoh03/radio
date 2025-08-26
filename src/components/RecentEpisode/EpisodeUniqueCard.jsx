@@ -8,7 +8,6 @@ import Heading from "../Shared/Heading";
 import CircleBtn from "../Shared/CircleBtn";
 
 const EpisodeUniqueCard = ({ cardData }) => {
-  console.log(cardData);
 
   return (
     <div className="unique-episode-card d-flex flex-column flex-lg-row rounded-4 bcp-1-2">

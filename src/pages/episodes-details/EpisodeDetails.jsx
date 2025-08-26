@@ -176,7 +176,7 @@ const EpisodeDetails = () => {
               </FadeUp>
               {/* <!-- episode details content --> */}
               <div className="episodes-details-content d-grid p-xxl-8 p-4 gap-xxl-8 gap-6 rounded bgc-2">
-                <FadeUp>
+                {/* <FadeUp>
                   <div>
                     <h3 className="fw-semibold mb-4">Episode Description</h3>
                     <p className="fw-normal tcn-20">
@@ -189,7 +189,7 @@ const EpisodeDetails = () => {
                       make storytelling a timeless art form.
                     </p>
                   </div>
-                </FadeUp>
+                </FadeUp> */}
               
                
                
