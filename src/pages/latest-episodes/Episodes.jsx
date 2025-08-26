@@ -47,20 +47,19 @@ const Episodes = ({ searchKeyword, removeSearchHistory }) => {
       
       const data = await response.json();
       
-      // Base URL for your API server
       // Helper function to construct full image URL
       const getFullImageUrl = (imagePath) => {
         if (!imagePath) return null;
-        if (imagePath.startsWith('https')) return imagePath; // Already full URL
+        if (imagePath.startsWith('https://') || imagePath.startsWith('http://')) return imagePath; // Already full URL
         return `${API_BASE_URL}${imagePath}`; // Prepend base URL to relative path
       };
 
       // Helper function to format duration
       const formatDuration = (durationInSeconds) => {
-        if (!durationInSeconds || durationInSeconds === "") return "Duration TBD";
+        if (!durationInSeconds || durationInSeconds === "" || durationInSeconds === "0") return "Duration TBD";
         
         const totalSeconds = parseInt(durationInSeconds);
-        if (isNaN(totalSeconds)) return "Duration TBD";
+        if (isNaN(totalSeconds) || totalSeconds === 0) return "Duration TBD";
         
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -72,30 +71,52 @@ const Episodes = ({ searchKeyword, removeSearchHistory }) => {
         }
       };
 
+      // Helper function to format published date
+      const formatPublishedDate = (dateString) => {
+        if (!dateString) return null;
+        try {
+          const date = new Date(dateString);
+          return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (error) {
+          return dateString; // Return original if parsing fails
+        }
+      };
+
       // Transform API data to match your existing component structure
       const transformedEpisodes = data.items.map(item => ({
         id: item.id,
         title: item.title,
-        shortDesc: item.title, // Using title as shortDesc since API doesn't provide description
+        shortDesc: item.shortDescription || item.description || item.title, // Use shortDescription first, then description, fallback to title
+        description: item.description, // Full description
         link: `/episode-details/${item.slug}`,
         host: {
           name: item.hostName,
           link: "/host-details",
+          id: item.hostId
         },
         guest: item.guestName ? {
           name: item.guestName,
-          link: "/guest-details"
+          link: "/guest-details",
+          id: item.guestId
         } : null,
         time: formatDuration(item.durationInSeconds),
         episode: `Episode ${item.episodeNo}`,
         img: getFullImageUrl(item.imageUrl),
         banner: getFullImageUrl(item.imageUrl),
         thumb: getFullImageUrl(item.imageUrl),
-        publishedDate: item.publishedDate,
-        totalViews: item.totalViews,
-        totalLikes: item.totalLikes,
-        category: item.category,
-        slug: item.slug
+        publishedDate: formatPublishedDate(item.publishedDate),
+        eventDateString: item.eventDateString, // New field
+        totalViews: item.totalViews || 0,
+        totalLikes: item.totalLikes || 0,
+        category: item.category, // Can be null
+        slug: item.slug,
+        videoUrl: item.videoUrl, // New field
+        isPublished: item.isPublished,
+        durationInSeconds: item.durationInSeconds
       }));
       
       setEpisodes(transformedEpisodes);
@@ -118,13 +139,13 @@ const Episodes = ({ searchKeyword, removeSearchHistory }) => {
 
   // Fetch episodes on component mount and when search keywords change
   useEffect(() => {
-    const searchQuery = searchKeyword.join(' '); // Join search keywords
+    const searchQuery = searchKeyword?.length > 0 ? searchKeyword.join(' ') : ''; // Handle undefined searchKeyword
     fetchEpisodes(1, 20, searchQuery);
   }, [searchKeyword]);
 
   // Handle pagination
   const handlePageChange = (page) => {
-    const searchQuery = searchKeyword.join(' ');
+    const searchQuery = searchKeyword?.length > 0 ? searchKeyword.join(' ') : '';
     fetchEpisodes(page, pagination.pageSize, searchQuery);
   };
 
@@ -149,7 +170,7 @@ const Episodes = ({ searchKeyword, removeSearchHistory }) => {
   return (
     <section className="latest-episodes-section pt-15 pb-120 texture-bg-1">
       <div className="container">
-        {searchKeyword.length > 0 && (
+        {searchKeyword?.length > 0 && (
           <FadeDown>
             <div className="d-between gap-2 flex-wrap align-items-center mb-lg-10 mb-sm-6 mb-4">
               <p>{pagination.totalCount} Episodes Available</p>
@@ -193,6 +214,9 @@ const Episodes = ({ searchKeyword, removeSearchHistory }) => {
             {episodes.length === 0 && !loading && (
               <div className="text-center py-5">
                 <p>No episodes found.</p>
+                {searchKeyword?.length > 0 && (
+                  <p className="text-muted">Try adjusting your search terms or clear the search filters.</p>
+                )}
               </div>
             )}
 

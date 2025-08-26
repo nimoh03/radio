@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import EpisodeShortDetails from "./EpisodeShortDetails";
 import HostDetails from "./HostDetails";
 import SocialList from "@/components/Shared/SocialList";
@@ -14,6 +16,39 @@ import guest2 from "@/images/ep-guest-2.png";
 import hostImg from "@/images/host-profile-2.png";
 
 const EpisodeDetails = () => {
+  const { id } = useParams(); // Get the ID from URL
+  
+  const [episodeData, setEpisodeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch episode data when component mounts or ID changes
+  useEffect(() => {
+    const fetchEpisodeData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`https://api.technaija.fm/api/episode/${id}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setEpisodeData(data);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching episode data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchEpisodeData();
+    }
+  }, [id]);
+
   const guestList = [
     {
       profile: guest1,
@@ -95,7 +130,35 @@ const EpisodeDetails = () => {
       link: "#",
     },
   ];
-  const host = {
+  
+  // Dynamic host data from API or fallback to static data
+  const host = episodeData ? {
+    name: episodeData.hostName || "RJ Jones Nicklose",
+    link: episodeData.hostId ? `/host-details/${episodeData.hostId}` : "/host-details",
+    profile: episodeData.hostProfilePicture || hostImg,
+    socials: [
+      {
+        icon: "ti ti-brand-facebook",
+        link: "#",
+      },
+      {
+        icon: "ti ti-brand-twitter",
+        link: "#",
+      },
+      {
+        icon: "ti ti-brand-linkedin",
+        link: "#",
+      },
+      {
+        icon: "ti ti-brand-youtube",
+        link: "#",
+      },
+      {
+        icon: "ti ti-brand-instagram",
+        link: "#",
+      },
+    ],
+  } : {
     name: "RJ Jones Nicklose",
     link: "/host-details",
     profile: hostImg,
@@ -164,6 +227,51 @@ const EpisodeDetails = () => {
     },
   ];
 
+  // Loading state
+  if (loading) {
+    return (
+      <section className="episodes-details-section pb-120 texture-bg-1 overflow-visible">
+        <div className="container">
+          <div className="d-flex justify-content-center align-items-center p-8">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section className="episodes-details-section pb-120 texture-bg-1 overflow-visible">
+        <div className="container">
+          <div className="d-flex justify-content-center align-items-center p-8">
+            <div className="alert alert-danger" role="alert">
+              Error loading episode: {error}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // No data state
+  if (!episodeData) {
+    return (
+      <section className="episodes-details-section pb-120 texture-bg-1 overflow-visible">
+        <div className="container">
+          <div className="d-flex justify-content-center align-items-center p-8">
+            <div className="alert alert-warning" role="alert">
+              Episode not found
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="episodes-details-section pb-120 texture-bg-1 overflow-visible">
       <div className="container">
@@ -176,22 +284,67 @@ const EpisodeDetails = () => {
               </FadeUp>
               {/* <!-- episode details content --> */}
               <div className="episodes-details-content d-grid p-xxl-8 p-4 gap-xxl-8 gap-6 rounded bgc-2">
-                {/* <FadeUp>
+                <FadeUp>
                   <div>
                     <h3 className="fw-semibold mb-4">Episode Description</h3>
                     <p className="fw-normal tcn-20">
-                      Explore the enchanting world of storytelling in Episode 12
-                      - &quot;Stories Resonate: The Art of Storytelling.&quot;
-                      In this episode, we unravel the power of narratives,
-                      discussing how stories connect us, evoke emotions, and
-                      leave a lasting impact. Join us for an insightful
-                      conversation on the techniques, emotions, and magic that
-                      make storytelling a timeless art form.
+                      {episodeData.description || episodeData.shortDescription || "Episode description not available"}
                     </p>
                   </div>
-                </FadeUp> */}
-              
-               
+                </FadeUp>
+
+                {/* Guest Section */}
+                {episodeData.guest && (
+                  <FadeUp>
+                    <div className="guest-section">
+                      <h3 className="fw-semibold mb-4">Featured Guest</h3>
+                      <div className="guest-card p-4 rounded bgc-3 border">
+                        <div className="row align-items-center">
+                          <div className="col-md-3 col-sm-4 mb-3 mb-sm-0">
+                            <img 
+                              src={episodeData.guest.profilePictureUrl || episodeData.guest.headShotUrl || hostImg} 
+                              alt={episodeData.guest.name}
+                              className="w-100 rounded-circle"
+                              style={{aspectRatio: '1/1', objectFit: 'cover'}}
+                              onError={(e) => {
+                                e.target.src = hostImg; // Fallback image
+                              }}
+                            />
+                          </div>
+                          <div className="col-md-9 col-sm-8">
+                            <h4 className="fw-semibold mb-2">{episodeData.guest.name}</h4>
+                            <p className="text-muted mb-2 fs-sm">{episodeData.guest.title}</p>
+                            <p className="fw-normal tcn-20 mb-3">
+                              {episodeData.guest.bio}
+                            </p>
+                            <div className="guest-socials d-flex gap-3">
+                              {episodeData.guest.linkedIn && (
+                                <a 
+                                  href={episodeData.guest.linkedIn} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="social-link"
+                                >
+                                  <i className="ti ti-brand-linkedin"></i>
+                                </a>
+                              )}
+                              {episodeData.guest.gitHub && (
+                                <a 
+                                  href={episodeData.guest.gitHub} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="social-link"
+                                >
+                                  <i className="ti ti-brand-github"></i>
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </FadeUp>
+                )}
                
                 <FadeUp>
                   <div className="d-between flex-wrap gap-md-3 gap-6 pt-lg-8 pt-sm-6 pt-4 border-dashed">
@@ -204,24 +357,12 @@ const EpisodeDetails = () => {
                       </div>
                       {<SocialList socials={socials} />}
                     </div>
-                    {/* <div className="tag-list-wrapper d-between gap-4">
-                      <div className="d-flex align-items-center tcp-1 gap-1 d-none d-xxl-block">
-                        <span className="fw-semibold">Tag</span>
-                        <span className="lh-0">
-                          <i className="ti ti-arrow-right"></i>
-                        </span>
-                      </div>
-                      {<TagList tags={tags} />}
-                    </div> */}
                   </div>
                 </FadeUp>
               </div>
             </div>
-
-            {/* <!-- episode faq  --> */}
-         
           </div>
-          {/* <div className="col-xl-4">
+          <div className="col-xl-4">
             <div className="episodes-details-sidebar d-grid gap-lg-6 gap-4 p-xxl-6 p-4 rounded bgc-3 position-sticky sticky-top sticky-top-position">
               <FadeUp>
                 <div className="search-card-wrapper p-xxl-8 p-4 rounded bgc-1">
@@ -239,15 +380,15 @@ const EpisodeDetails = () => {
                   <ListenOnBtns />
                 </div>
               </FadeUp>
-              <FadeUp>
+              {/* <FadeUp>
                 <div className="tag-list-wrapper p-xxl-8 p-4 rounded bgc-1">
                   <h4 className="fw-semibold mb-lg-6 mb-4">Popular Tag</h4>
                   <span className="d-block border-dashed mb-lg-6 mb-4"></span>
                   <TagList tags={tags2} />
                 </div>
-              </FadeUp>
+              </FadeUp> */}
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </section>

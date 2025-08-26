@@ -8,13 +8,12 @@ import Heading from "../Shared/Heading";
 import CircleBtn from "../Shared/CircleBtn";
 
 const EpisodeUniqueCard = ({ cardData }) => {
-
   return (
     <div className="unique-episode-card d-flex flex-column flex-lg-row rounded-4 bcp-1-2">
-      {/* Image Section */}
+     
       <div
         className="card-banner d-flex justify-content-center mb-4 mb-lg-0 px-4 px-lg-0"
-        style={{ flex: "0 0 450px", maxWidth: "450px" }} // 👈 Fixed width for desktop
+        style={{ flex: "0 0 450px", maxWidth: "450px" }}
       >
         <img
           className="img-fluid rounded-3 shadow-sm mx-auto"
