@@ -98,9 +98,8 @@ const EpisodeShortDetails = () => {
   <div className="img-area p-3 pb-0">
     <img 
       className="w-100 rounded"
-      style={{height: '350px', objectFit: 'cover'}}
+      style={{objectFit: 'cover'}}
       src={episodeData[0].imageUrl || HostImg}
-      // src={About}
       alt="episode image"
       onError={(e) => {
         e.target.src = HostImg; // Fallback to default image
