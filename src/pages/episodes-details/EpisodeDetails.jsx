@@ -133,35 +133,45 @@ const EpisodeDetails = () => {
   
   // Dynamic host data from API or fallback to static data
   const host = episodeData ? {
-    name: episodeData.hostName || "RJ Jones Nicklose",
+    host: { // Create the nested structure that HostDetails expects
+      name: episodeData.hostName || "RJ Jones Nicklose",
+      profilePictureUrl: episodeData.hostProfilePicture || hostImg,
+      bio: episodeData.hostBio || "",
+      title: episodeData.hostTitle || "Podcast Host"
+    },
     link: episodeData.hostId ? `/host-details/${episodeData.hostId}` : "/host-details",
-    profile: episodeData.hostProfilePicture || hostImg,
+    category: episodeData.category || episodeData.hostSpecialty || "Podcast Host",
     socials: [
       {
         icon: "ti ti-brand-facebook",
-        link: "#",
+        link: episodeData.hostSocials?.facebook || "#",
       },
       {
-        icon: "ti ti-brand-twitter",
-        link: "#",
+        icon: "ti ti-brand-twitter", 
+        link: episodeData.hostSocials?.twitter || "#",
       },
       {
         icon: "ti ti-brand-linkedin",
-        link: "#",
+        link: episodeData.hostSocials?.linkedin || "#",
       },
       {
         icon: "ti ti-brand-youtube",
-        link: "#",
+        link: episodeData.hostSocials?.youtube || "#",
       },
       {
         icon: "ti ti-brand-instagram",
-        link: "#",
+        link: episodeData.hostSocials?.instagram || "#",
       },
     ],
   } : {
-    name: "RJ Jones Nicklose",
+    host: {
+      name: "RJ Jones Nicklose",
+      profilePictureUrl: hostImg,
+      bio: "",
+      title: "Podcast Host"
+    },
     link: "/host-details",
-    profile: hostImg,
+    category: "Podcast Host",
     socials: [
       {
         icon: "ti ti-brand-facebook",
@@ -287,7 +297,7 @@ const EpisodeDetails = () => {
                 <FadeUp>
                   <div>
                     <h3 className="fw-semibold mb-4">Episode Description</h3>
-                    <p className="fw-normal tcn-20">
+                    <p className="fw-normal tcn-20 text-justify lh-lg">
                       {episodeData.description || episodeData.shortDescription || "Episode description not available"}
                     </p>
                   </div>

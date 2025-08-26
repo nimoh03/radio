@@ -122,7 +122,7 @@ const MoreEpisode = () => {
         <div className="row">
           <div className="col-12">
             <FadeUp>
-              <EpisodesSlider
+              <EpisodesSlider 
                 sliderData={episodes}
                 paginationEl={".more-episodes-pagination"}
                 nextEl={".more-episodes-next"}

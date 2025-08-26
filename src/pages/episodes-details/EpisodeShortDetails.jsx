@@ -91,7 +91,7 @@ const EpisodeShortDetails = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="episode-details-card d-flex justify-content-center align-items-center p-8">
+      <div className="episode-details-card d-flex justify-content-center align-items-center p-4">
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -102,7 +102,7 @@ const EpisodeShortDetails = () => {
   // Error state
   if (error) {
     return (
-      <div className="episode-details-card d-flex justify-content-center align-items-center p-8">
+      <div className="episode-details-card d-flex justify-content-center align-items-center p-4">
         <div className="alert alert-danger" role="alert">
           Error loading episode: {error}
         </div>
@@ -113,7 +113,7 @@ const EpisodeShortDetails = () => {
   // No data state
   if (!episodeData) {
     return (
-      <div className="episode-details-card d-flex justify-content-center align-items-center p-8">
+      <div className="episode-details-card d-flex justify-content-center align-items-center p-4">
         <div className="alert alert-warning" role="alert">
           Episode not found
         </div>
@@ -122,78 +122,85 @@ const EpisodeShortDetails = () => {
   }
 
   return (
- <div className="episode-details-card d-flex align-items-stretch p-0 rounded bgc-2 shadow-sm">   
-  {/* Image Section - Takes up more space */}
-  <div className="img-area p-3" style={{flex: '0 0 40%'}}>     
-    <img        
-      className="w-100 rounded"       
-      style={{objectFit: 'cover', height: '100%'}}       
-      src={episodeData.imageUrl || HostImg}       
-      alt="episode image"       
-      onError={(e) => {         
-        e.target.src = HostImg; // Fallback to default image       
-      }}     
-    />   
-  </div>      
+    <div className="episode-details-card d-flex flex-column flex-md-row align-items-stretch p-0 rounded bgc-2 shadow-sm">   
+      {/* Image Section - Responsive sizing */}
+      <div className="img-area p-3" style={{
+        flex: '0 0 auto',
+        width: '100%'
+      }}>     
+        <img        
+          className="w-100 rounded"       
+          style={{
+            objectFit: 'cover', 
+            height: '250px', // Fixed height for mobile
+            maxHeight: '300px'
+          }}       
+          src={episodeData.imageUrl || HostImg}       
+          alt="episode image"       
+          onError={(e) => {         
+            e.target.src = HostImg; // Fallback to default image       
+          }}     
+        />   
+      </div>      
 
-  {/* Content Section */}
-  <div className="episode-card small-card p-4 d-flex flex-column" style={{flex: '1'}}>     
-    {/* Episode Info - Top */}
-    <div className="d-flex flex-wrap flex-sm-nowrap align-items-center gap-lg-6 gap-4 mb-lg-4 mb-3">       
-      <span className="tag-btn">         
-        Episode {episodeData.episodeNo || id}       
-      </span>       
-      <HostName          
-        icon={<i className="ti ti-microphone"></i>}         
-        // link={episodeData[0].hostId ? `/host-details/${episodeData[0].hostId}` : "/host-details"}         
-        hostName={episodeData.hostName || "Host Name"}       
-      />       
-      <PodcastTime          
-        icon={<i className="ti ti-calendar"></i>}         
-        time={formatEpisodeDate(episodeData.createdAt)}       
-      />     
-    </div>          
-    
-    {/* Title */}
-    <Heading        
-      HeadType="h3"       
-      headText={episodeData.title || "Episode Title"}       
-      headClass="fw-semibold mb-3"     
-    />          
-    
-    {/* Description */}
-    {/* <p className="fs-sm fw-normal mb-4">       
-      {episodeData.description || episodeData.shortDescription || "Episode description not available"}     
-    </p>           */}
-    
-    {/* Additional episode info */}     
-    <div className="episode-stats d-flex gap-4 mb-4">       
-      <span className="text-muted">         
-        <i className="ti ti-heart"></i> {episodeData.totalLikes || 0} likes       
-      </span>       
-      <span className="text-muted">         
-        <i className="ti ti-eye"></i> {episodeData.totalViews || 0} views       
-      </span>       
-      <span className="text-muted">         
-        <i className="ti ti-message-circle"></i> {episodeData.totalComments || 0} comments       
-      </span>     
-    </div>          
-    
-    {/* Listen Now Button - Moved up and positioned at bottom of right section */}
-    <div className="mt-auto">       
-      <CircleBtn          
-        type={"button"}         
-        text={"Listen Now"}         
-        onClick={() => {           
-          const audioUrl = episodeData.audioUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3";           
-          handlePlayButtonClick(audioUrl);         
-        }}         
-        icon={<i className="ti ti-player-play"></i>}         
-        iconSize="fs-xl"       
-      />     
-    </div>   
-  </div> 
-</div>
+      {/* Content Section */}
+      <div className="episode-card small-card p-4 d-flex flex-column" style={{flex: '1'}}>     
+        {/* Episode Info - Top */}
+        <div className="d-flex flex-wrap align-items-center gap-3 gap-lg-4 mb-3 mb-lg-4">       
+          <span className="tag-btn">         
+            Episode {episodeData.episodeNo || id}       
+          </span>       
+          <HostName          
+            icon={<i className="ti ti-microphone"></i>}         
+            // link={episodeData[0].hostId ? `/host-details/${episodeData[0].hostId}` : "/host-details"}         
+            hostName={episodeData.host.name|| "Host Name"}       
+          />       
+          <PodcastTime          
+            icon={<i className="ti ti-calendar"></i>}         
+            time={formatEpisodeDate(episodeData.createdAt)}       
+          />     
+        </div>          
+        
+        {/* Title */}
+        <Heading        
+          HeadType="h3"       
+          headText={episodeData.title || "Episode Title"}       
+          headClass="fw-semibold mb-3"     
+        />          
+        
+        {/* Description - Uncomment if needed */}
+        {/* <p className="fs-sm fw-normal mb-4">       
+          {episodeData.description || episodeData.shortDescription || "Episode description not available"}     
+        </p>           */}
+        
+        {/* Additional episode info */}     
+        <div className="episode-stats d-flex flex-wrap gap-3 gap-lg-4 mb-4">       
+          <span className="text-muted">         
+            <i className="ti ti-heart"></i> {episodeData.totalLikes || 0} likes       
+          </span>       
+          <span className="text-muted">         
+            <i className="ti ti-eye"></i> {episodeData.totalViews || 0} views       
+          </span>       
+          <span className="text-muted">         
+            <i className="ti ti-message-circle"></i> {episodeData.totalComments || 0} comments       
+          </span>     
+        </div>          
+        
+        {/* Listen Now Button */}
+        <div className="mt-auto">       
+          <CircleBtn          
+            type={"button"}         
+            text={"Listen Now"}         
+            onClick={() => {           
+              const audioUrl = episodeData.audioUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3";           
+              handlePlayButtonClick(audioUrl);         
+            }}         
+            icon={<i className="ti ti-player-play"></i>}         
+            iconSize="fs-xl"       
+          />     
+        </div>   
+      </div> 
+    </div>
   );
 };
 
