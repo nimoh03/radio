@@ -8,10 +8,10 @@ import Heading from "../Shared/Heading";
 import CircleBtn from "../Shared/CircleBtn";
 
 const EpisodeUniqueCard = ({ cardData }) => {
- 
+  console.log(cardData);
+
   return (
     <div className="unique-episode-card d-flex flex-column flex-lg-row rounded-4 bcp-1-2">
-      
       {/* Image Section */}
       <div
         className="card-banner d-flex justify-content-center mb-4 mb-lg-0 px-4 px-lg-0"
@@ -31,12 +31,11 @@ const EpisodeUniqueCard = ({ cardData }) => {
 
       {/* Content Section */}
       <div className="card-content p-xxl-10 p-6 d-flex flex-column flex-grow-1">
-        
         {/* Top Section: Host + Time + Track */}
         <div className="card-top d-between gap-xxl-6 gap-4 mb-6">
-          <div className="d-flex align-items-center gap-sm-4 gap-2 flex-wrap flex-sm-nowrap">
+          <div className="d-flex align-items-center gap-sm-4 gap-2 flex-wrap flex-sm-nowrap text-dark text-decoration-none link-dark">
             <HostName
-              link={cardData.host.hostLink}
+              // link={cardData.host.hostLink}
               icon={<i className="ti ti-microphone"></i>}
               iconColor="tcn-700"
               hostName={cardData.host.name}
@@ -58,22 +57,20 @@ const EpisodeUniqueCard = ({ cardData }) => {
         </div>
 
         {/* Title */}
-        <Link to={`${cardData.textLink}`} className="link-text-2 tcn-700">
+        <span className="tcn-700 text-dark text-decoration-none link-dark">
           <Heading
             HeadType="h3"
             headText={cardData.title}
             charLimit={90}
             headClass="fw-semibold mb-4"
           />
-        </Link>
+        </span>
 
         {/* Short Description */}
-        <p className="fs-sm tcn-700 flex-grow-1">
-          {cardData.shortDescription}
-        </p>
+        <p className="fs-sm tcn-700 flex-grow-1">{cardData.shortDescription}</p>
 
         {/* Actions */}
-        <div className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8">
+        <div className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8 text-dark text-decoration-none link-dark">
           <CircleBtn
             type={"button"}
             text={"Play Episode"}

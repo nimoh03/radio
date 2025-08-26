@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Heading from "../Shared/Heading";
 import CircleBtn from "../Shared/CircleBtn";
 const EpisodeCardOne = ({ data }) => {
-  console.log(data.id);
+
   
   return (
    <Link to={`/episode-details/${data?.id}`} className="text-decoration-none">
@@ -17,7 +17,7 @@ const EpisodeCardOne = ({ data }) => {
       <div className="card-top d-between flex-wrap flex-sm-nowrap gap-xxl-6 gap-4 mb-lg-6 mb-4">
         <div className="d-flex align-items-center flex-wrap flex-sm-nowrap gap-xxl-6 gap-4">
           <HostName
-            link={data?.host?.link}
+            link={`/episode-details/${data?.id}`}
             icon={<i className="ti ti-microphone"></i>}
             hostName={data?.host?.name}
           />
