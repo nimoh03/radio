@@ -28,7 +28,7 @@ const Hero = () => {
                   Tech <span className="tcp-1">Conversations</span> with
                   Purpose.
                 </h2>
-                <p className="fs-xl fw-normal me-xl-20 pe-xxl-5">
+                <p className="fs-xl fw-normal me-xl-20 pe-xxl-5"  style={{textAlign: 'justify'}}>
                 TechNaija isn’t just a podcast — it’s a platform that amplifies Africa’s voice in the global technology conversation. We bring together innovators, engineers, entrepreneurs, and everyday users to share how technology is transforming lives across Africa and the world.
                 </p>
              

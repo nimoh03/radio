@@ -10,7 +10,6 @@ import CircleBtn from "../Shared/CircleBtn";
 const EpisodeUniqueCard = ({ cardData }) => {
   return (
     <div className="unique-episode-card d-flex flex-column flex-lg-row rounded-4 bcp-1-2">
-     
       <div
         className="card-banner d-flex justify-content-center mb-4 mb-lg-0 px-4 px-lg-0"
         style={{ flex: "0 0 450px", maxWidth: "450px" }}
@@ -68,15 +67,37 @@ const EpisodeUniqueCard = ({ cardData }) => {
         <p className="fs-sm tcn-700 flex-grow-1">{cardData.shortDescription}</p>
 
         {/* Actions */}
-        <div className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8 text-dark text-decoration-none link-dark">
-          <CircleBtn
-            type={"button"}
-            text={"Play Episode"}
-            icon={<i className="ti ti-player-play"></i>}
-            altColor="alt-color"
-          />
-          <span className="tag-btn alt-color">{cardData.episode}</span>
-        </div>
+        {cardData.videoUrl || cardData.audioUrl ? (
+          <a
+            href={cardData.videoUrl || cardData.audioUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8 text-dark text-decoration-none link-dark"
+          >
+            <CircleBtn
+              type={"button"}
+              text={"Play Episode"}
+              icon={<i className="ti ti-player-play"></i>}
+              altColor="alt-color"
+            />
+            <span className="tag-btn alt-color">{cardData.episode}</span>
+          </a>
+        ) : (
+          <a
+            href="https://www.youtube.com/@TECHNAIJA-Studio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8 text-dark text-decoration-none link-dark"
+          >
+            <CircleBtn
+              type={"button"}
+              text={"Play Episode"}
+              icon={<i className="ti ti-player-play"></i>}
+              altColor="alt-color"
+            />
+            <span className="tag-btn alt-color">{cardData.episode}</span>
+          </a>
+        )}
       </div>
     </div>
   );

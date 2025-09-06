@@ -16,7 +16,7 @@ const SectionHeading = ({
   highlightColor = "", // highlight color
 }) => {
   return (
-    <div className={`section-heading text-${alignItems}`}>
+    <div className={`section-heading`}>
       {subTxt && (
         <span
           className={`subheading-border fs-xl fw-medium mb-4 ${altBrdColor}`}
@@ -28,10 +28,10 @@ const SectionHeading = ({
       <HeadingType className={`${headFs} ${fw} ${padding} ${headColor}`}>
         {headTxt}
         {highlightWord && (
-          <span className={`${highlightColor}`}> {highlightWord}</span>
+          <span className={`${highlightColor}`}  style={{textAlign: 'justify'}}> {highlightWord}</span>
         )}
       </HeadingType>
-      {descText && <p className={`fw-normal ${descClass}`}>{descText}</p>}
+      {descText && <p className={`fw-normal ${descClass}`}  style={{textAlign: 'justify'}}>{descText}</p>}
     </div>
   );
 };

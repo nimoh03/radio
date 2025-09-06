@@ -294,7 +294,7 @@ const EpisodeDetails = () => {
                 <FadeUp>
                   <div>
                     <h3 className="fw-semibold mb-4">Episode Description</h3>
-                    <p className="fw-normal tcn-20 text-justify lh-lg">
+                    <p className="fw-normal tcn-20 lh-lg"  style={{textAlign: 'justify'}}>
                       {episodeData.description || episodeData.shortDescription || "Episode description not available"}
                     </p>
                   </div>
@@ -321,7 +321,7 @@ const EpisodeDetails = () => {
                           <div className="col-md-9 col-sm-8">
                             <h4 className="fw-semibold mb-2">{episodeData.guest.name}</h4>
                             <p className="text-white fw-semibold mb-4 fs-sm">{episodeData.guest.title}</p>
-                            <p className="fw-normal tcn-20 mb-3">
+                            <p className="fw-normal tcn-20 mb-3"  style={{textAlign: 'justify'}}>
                               {episodeData.guest.bio}
                             </p>
                             <div className="guest-socials d-flex gap-3">

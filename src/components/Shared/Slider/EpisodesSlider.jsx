@@ -13,6 +13,8 @@ import trackImg from "../../../images/record.png";
 import CircleBtn from "../CircleBtn";
 
 const EpisodesSlider = ({ nextEl, prevEl, paginationEl, sliderData }) => {
+ 
+  
   return (
     <Swiper
       // install Swiper modules
@@ -65,13 +67,15 @@ const EpisodesSlider = ({ nextEl, prevEl, paginationEl, sliderData }) => {
               </span>
               <p className="fs-sm">{data?.shortDesc || data?.description}</p>
               <div className="card-btns d-between flex-wrap flex-sm-nowrap gap-6 mt-8">
-                <CircleBtn
+               <a href={data?.video}>
+                 <CircleBtn
                   type={"button"}
                   text={"Listen Now"}
                   // onClick={() => {}}
                   icon={<i className="ti ti-player-play"></i>}
                   iconSize="fs-xl"
                 />
+               </a>
                 <span className="tag-btn alt-color">{data?.episode || data?.episodeNumber}</span>
               </div>
             </div>

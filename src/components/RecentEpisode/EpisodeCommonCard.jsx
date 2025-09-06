@@ -8,6 +8,8 @@ import Heading from "../Shared/Heading";
 import CircleBtn from "../Shared/CircleBtn";
 
 const EpisodeCommonCard = ({ cardData }) => {
+  console.log(cardData);
+  
   return (
     <div className="common-episode-card p-xxl-10 p-6 bgc-2 rounded">
       <div className="card-top d-between gap-xxl-6 gap-4 mb-6">
@@ -37,16 +39,19 @@ const EpisodeCommonCard = ({ cardData }) => {
         />
       </Link>
       <p className="fs-sm fw-normal">{cardData?.shortDescription}</p>
-      <div className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8">
-        <CircleBtn
-          type={"link"}
-          link={cardData?.textLink}
-          text={"Play Episode"}
-          icon={<i className="ti ti-player-play"></i>}
-          iconSize="fs-xl"
-        />
-        <span className="tag-btn">{cardData?.episode}</span>
-      </div>
+     <div className="d-between flex-wrap flex-sm-nowrap gap-6 mt-8">
+  {/* Use the audio property instead of videoUrl */}
+  <a href={cardData?.audio}>
+    <CircleBtn
+      type={"button"}
+      text={"Play Episode"}
+      icon={<i className="ti ti-player-play"></i>}
+      iconSize="fs-xl"
+    />
+  </a>
+  
+  <span className="tag-btn">{cardData?.episode}</span>
+</div>
     </div>
   );
 };
