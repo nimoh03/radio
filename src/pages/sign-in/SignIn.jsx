@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import TopWave from "@/components/Shared/TopWave";
 import BottomWave from "@/components/Shared/BottomWave";
@@ -11,20 +11,66 @@ import bottomWaveShape from "@/images/bottom-wave-shape-2.png";
 import banner from "@/images/sign-up-img.png";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.id]: e.target.value });
-    // console.log(form);
+    // Clear error when user starts typing
+    if (error) setError("");
   };
-  const handleFormSubmit = (e) => {
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
-    setForm({ email: "", password: "" });
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch('https://api.technaija.fm/api/account/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Store authentication data if provided by the API
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+        if (data.user) {
+          localStorage.setItem('userData', JSON.stringify(data.user));
+        }
+
+        // Clear form
+        setForm({ email: "", password: "" });
+        
+        // Navigate to the create episode page
+        navigate('/user/create-episode');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Login failed. Please check your credentials.');
+      }
+    } catch (err) {
+      setError('Network error. Please check your connection and try again.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
+
   const togglePassword = () => {
     const x = document.getElementById("password");
     if (x.type === "password") {
@@ -35,6 +81,7 @@ const SignIn = () => {
       setShowPassword(false);
     }
   };
+
   return (
     <section className="sign-up auth-container inner-hero-section overflow-hidden texture-bg-1">
       <div className="top-wave-shape">
@@ -61,6 +108,14 @@ const SignIn = () => {
                   <h3 className="mb-4">Welcome Back!</h3>
                   <p>Sign in to your account and join us</p>
                 </div>
+
+                {/* Error Message */}
+                {error && (
+                  <div className="alert alert-danger mb-4" role="alert">
+                    {error}
+                  </div>
+                )}
+
                 <div className="d-grid gap-lg-6 gap-4">
                   <div className="input-wrapper alt-color d-grid gap-4 w-100">
                     <label htmlFor="email">Enter Your Email ID</label>
@@ -71,6 +126,8 @@ const SignIn = () => {
                       name="email"
                       onChange={handleChange}
                       value={form.email}
+                      required
+                      disabled={loading}
                     />
                   </div>
                   <div className="input-wrapper alt-color d-grid gap-4 w-100">
@@ -83,10 +140,13 @@ const SignIn = () => {
                         name="password"
                         onChange={handleChange}
                         value={form.password}
+                        required
+                        disabled={loading}
                       />
                       <span
                         className="cursor-pointer px-3"
                         onClick={togglePassword}
+                        style={{ opacity: loading ? 0.5 : 1 }}
                       >
                         {showPassword ? (
                           <i className="ti ti-eye"></i>
@@ -105,17 +165,30 @@ const SignIn = () => {
                     Forgot Password?
                   </Link>
                   <p>
-                    Don’t have an account?{" "}
+                    Don't have an account?{" "}
                     <Link to="/register" className="tcp-1">
                       Sign Up
                     </Link>
                   </p>
                 </div>
-                <button type="submit" className="bttn-1">
-                  Sign In
-                  <span className=" icon d-center icon-right">
-                    <i className="ti ti-arrow-narrow-right"></i>
-                  </span>
+                <button 
+                  type="submit" 
+                  className="bttn-1" 
+                  disabled={loading || !form.email || !form.password}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Signing In...
+                    </>
+                  ) : (
+                    <>
+                      Sign In
+                      <span className="icon d-center icon-right">
+                        <i className="ti ti-arrow-narrow-right"></i>
+                      </span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>
